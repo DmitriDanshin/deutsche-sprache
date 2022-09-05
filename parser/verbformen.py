@@ -18,11 +18,11 @@ from utils.logger import verbformen_logger
 
 class VerbformenParser(SoupParserABC):
     def __init__(self, query: dict[str, str]):
+        self.__text, self.url = VerbformenAPI.get(query=query)
         self.__soup = (
             HTMLParser
             .parse_html(
-                VerbformenAPI
-                .get(query=query)
+                self.__text
             )
         )
         verbformen_logger.info(
@@ -328,7 +328,8 @@ class VerbformenParser(SoupParserABC):
                     "Часть речи": self.__get_part_of_speech().value,
                     "Переводы на русский": self.__get_word_translations_rus(),
                     "Переводы на английский": self.__get_word_translations_eng(),
-                    "Формы": self.__get_word_forms()
+                    "Формы": self.__get_word_forms(),
+                    "url": str(self.url)
                 }
             }
             verbformen_logger.info(

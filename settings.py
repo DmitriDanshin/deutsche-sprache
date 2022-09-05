@@ -36,6 +36,12 @@ DECLENSION_TABLE_CLASS = (
     "vTbl"
 )
 
+# Wikionary
+
+WIKIONARY_URL = "https://{}.wiktionary.org/wiki/{}"
+EXCLUDED = [
+    "Отсутствует пример употребления см рекомендации",
+]
 # Logger
 
 LOGGER_FORMAT = (

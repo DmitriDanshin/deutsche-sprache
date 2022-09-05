@@ -23,3 +23,4 @@ class SoupParserABC(ABC):
         :returns: parsed dict
         """
         pass
+

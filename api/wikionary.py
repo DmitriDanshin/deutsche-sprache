@@ -1,25 +1,23 @@
 from starlette.datastructures import URL
 
 from api.base import APIHandlerABC
-from settings import VERBFORMEN_URL
+from settings import VERBFORMEN_URL, WIKIONARY_URL
 
 import requests
 
-from utils.logger import verbformen_logger
+from utils.logger import wikionary_logger
 
 
-class VerbformenAPI(APIHandlerABC):
+class WikionaryAPI(APIHandlerABC):
     @classmethod
     def get(cls, query: dict[str, str] | None = None) -> tuple[str, URL]:
         if query is None:
             query = {}
-        url = URL(VERBFORMEN_URL)
-        url = url.include_query_params(**query)
-
+        url = URL(WIKIONARY_URL.format(query["lang"], query['w']))
         response = requests.get(str(url))
 
-        verbformen_logger.info(
-            f"Successfully make a GET request to {VERBFORMEN_URL} "
+        wikionary_logger.info(
+            f"Successfully make a GET request to {url} "
             f"with status code {response.status_code}"
         )
 
