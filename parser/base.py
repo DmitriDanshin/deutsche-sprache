@@ -11,3 +11,15 @@ class HTMLParserABC(ABC):
         :return: bs4 object
         """
         pass
+
+
+class SoupParserABC(ABC):
+    html: str
+
+    @abstractmethod
+    def parse(self) -> dict:
+        """
+        Parse a bs4 object to dict
+        :returns: parsed dict
+        """
+        pass

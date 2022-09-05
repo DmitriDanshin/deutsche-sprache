@@ -3,7 +3,7 @@ from parser.verbformen import VerbformenParser
 
 
 class App(AppABC):
-    def __init__(self, verbformen_query):
+    def __init__(self, verbformen_query: dict[str, str]):
         self.__verbformen_data = (
             VerbformenParser(query=verbformen_query)
             .parse()

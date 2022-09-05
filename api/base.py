@@ -11,13 +11,3 @@ class APIHandlerABC(ABC):
         pass
 
 
-class SoupParserABC(ABC):
-    html: str
-
-    @abstractmethod
-    def parse(self) -> dict:
-        """
-        Parse a bs4 object to dict
-        :returns: parsed dict
-        """
-        pass

@@ -1,14 +1,19 @@
+import os.path
+from collections import defaultdict
+
 from bs4 import Tag
 
 from api.verbformen import VerbformenAPI
-from api.base import SoupParserABC
 from enums.verbformen import SpeechPart
+from parser.base import SoupParserABC
 from parser.soup import HTMLParser
 from settings import (
     VERBFORMEN_WORD_CLASSES, VERBFORMEN_TRANSLATIONS_CLASSES,
     VERBFORMEN_WORD_VERB_CLASSES, VERBFORMEN_NAV_CLASS, AMOUNT_OF_GRAMMATICAL_CASES, NOUNS_WRAPPER_CLASS,
-    NOUNS_TABLE_CLASS, STRONG_DECLENSION_INDEX, WEAK_DECLENSION_INDEX, MIXED_DECLENSION_INDEX, DECLENSION_TABLE_CLASS
+    NOUNS_TABLE_CLASS, STRONG_DECLENSION_INDEX, WEAK_DECLENSION_INDEX, MIXED_DECLENSION_INDEX, DECLENSION_TABLE_CLASS,
+    VERBS_TABLE_CLASS, VERBS_CELL_CLASS
 )
+from utils.logger import verbformen_logger
 
 
 class VerbformenParser(SoupParserABC):
@@ -20,6 +25,10 @@ class VerbformenParser(SoupParserABC):
                 .get(query=query)
             )
         )
+        verbformen_logger.info(
+            f"Successfully parsed an HTML page"
+        )
+
         self.__part_of_speech = self.__get_part_of_speech()
 
     @property
@@ -66,10 +75,11 @@ class VerbformenParser(SoupParserABC):
             case _:
                 css_class = VERBFORMEN_WORD_CLASSES
 
-        word = (self
-                .__soup
-                .find("p", {"class": css_class})
-                )
+        word = (
+            self
+            .__soup
+            .find("p", {"class": css_class})
+        )
 
         return word.text.strip()
 
@@ -108,7 +118,59 @@ class VerbformenParser(SoupParserABC):
         )
 
     def __get_verb_forms(self) -> dict:
-        return {}
+        """
+           Get a German grammatical conjugation for given word
+
+           For Example:
+                  machen:{
+                     "Презенс":[
+                        "ich mach(e)⁵",
+                        <...>
+                     ],
+                     "Претеритум":[
+                        "ich machte",
+                        <...>
+                     ],
+                     "Императив":[
+                        "-",
+                         <...>
+                     ],
+                     "Конъюнктив I":[
+                        "ich mache",
+                         <...>
+                     ],
+                     "Конъюнктив II":[
+                        "ich machte",
+                        <...>
+                     ],
+                     "Инфинитив":[
+                        "",
+                        <...>
+                     ],
+                     "Партицип":[
+                        "",
+                        <...>
+                     ]
+                  }
+               }
+            }
+
+           :return: A dict with grammatical conjugation for given word
+           """
+
+        forms = defaultdict(list)
+
+        table = (
+            self
+            .__soup
+            .find_all("div", {"class": VERBS_TABLE_CLASS})[1]
+        )
+        cells = table.find_all("div", {"class": VERBS_CELL_CLASS})
+        for cell in cells:
+            title = cell.h2
+            for row in cell.table:
+                forms[title.text].append(row.text.strip())
+        return dict(forms)
 
     def __get_noun_forms(self) -> dict[str, dict[str, str]]:
         """
@@ -260,11 +322,27 @@ class VerbformenParser(SoupParserABC):
         :return: dict-like object
         """
 
-        return {
-            self.__get_word(): {
-                "Часть речи": self.__get_part_of_speech().value,
-                "Переводы на русский": self.__get_word_translations_rus(),
-                "Переводы на английский": self.__get_word_translations_eng(),
-                "Формы": self.__get_word_forms()
+        try:
+            word = {
+                self.__get_word(): {
+                    "Часть речи": self.__get_part_of_speech().value,
+                    "Переводы на русский": self.__get_word_translations_rus(),
+                    "Переводы на английский": self.__get_word_translations_eng(),
+                    "Формы": self.__get_word_forms()
+                }
             }
-        }
+            verbformen_logger.info(
+                f"Successfully parsed an HTML to dict-like format"
+            )
+        except AttributeError as e:
+            verbformen_logger.error(
+                f"An error ({e}) occurred while parsing an HTML to dict-like format"
+            )
+            return {
+                "error": {
+                    "msg": f"Failed to parse a page",
+                    "type": e,
+                    "module": os.path.basename(__file__)
+                },
+            }
+        return word

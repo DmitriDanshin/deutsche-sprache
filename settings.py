@@ -1,3 +1,5 @@
+# Verbformen
+
 VERBFORMEN_URL = "https://www.verbformen.ru/"
 VERBFORMEN_WORD_CLASSES = (
     "vGrnd rCntr"
@@ -19,6 +21,13 @@ NOUNS_TABLE_CLASS = (
     "vTbl"
 )
 
+VERBS_TABLE_CLASS = (
+    "rAufZu"
+)
+VERBS_CELL_CLASS = (
+    "rAufZu"
+)
+
 STRONG_DECLENSION_INDEX = 1
 WEAK_DECLENSION_INDEX = 2
 MIXED_DECLENSION_INDEX = 3
@@ -26,3 +35,11 @@ MIXED_DECLENSION_INDEX = 3
 DECLENSION_TABLE_CLASS = (
     "vTbl"
 )
+
+# Logger
+
+LOGGER_FORMAT = (
+    '[%(asctime)s: %(name)s | %(levelname)s] %(message)s'
+)
+
+LOGGER_PATH = "logs/"

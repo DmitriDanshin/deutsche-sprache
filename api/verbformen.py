@@ -5,6 +5,8 @@ from settings import VERBFORMEN_URL
 
 import requests
 
+from utils.logger import verbformen_logger
+
 
 class VerbformenAPI(APIHandlerABC):
     @classmethod
@@ -13,4 +15,12 @@ class VerbformenAPI(APIHandlerABC):
             query = {}
         url = URL(VERBFORMEN_URL)
         url = url.include_query_params(**query)
-        return requests.get(str(url)).text
+
+        response = requests.get(str(url))
+
+        verbformen_logger.info(
+            f"Successfully make a GET request to {VERBFORMEN_URL} "
+            f"with status code {response.status_code}"
+        )
+
+        return response.text
