@@ -84,13 +84,7 @@ class VerbformenParser(SoupParserABC):
         return word.text.strip()
 
     def __get_word_translations_rus(self) -> list[str]:
-        """
-        Get a word's Russian translations from HTML page
 
-        For example: ['пёс', 'собака', 'соба́ка']
-
-        :return: a list of word's translations (rus)
-        """
         return (
             self
             .__soup
@@ -343,7 +337,8 @@ class VerbformenParser(SoupParserABC):
                 "error": {
                     "msg": f"Failed to parse a page",
                     "type": e,
-                    "module": os.path.basename(__file__)
+                    "module": os.path.basename(__file__),
+                    "url": str(self.url)
                 },
             }
         return word

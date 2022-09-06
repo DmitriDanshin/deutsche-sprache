@@ -10,10 +10,10 @@ from utils.logger import wikionary_logger
 
 class WikionaryAPI(APIHandlerABC):
     @classmethod
-    def get(cls, query: dict[str, str] | None = None) -> tuple[str, URL]:
+    def get(cls, query: dict[str, str] | None = None, url: str = WIKIONARY_URL) -> tuple[str, URL]:
         if query is None:
             query = {}
-        url = URL(WIKIONARY_URL.format(query["lang"], query['w']))
+        url = URL(url.format(query["lang"], query['w']))
         response = requests.get(str(url))
 
         wikionary_logger.info(
