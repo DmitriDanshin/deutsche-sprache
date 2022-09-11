@@ -4,7 +4,7 @@ from api.context_reverso import ContextReversoAPI
 from parser.base import SoupParserABC
 from parser.soup import HTMLParser
 from utils.errors import Error
-from utils.logger import reverso_logger
+from utils.logger import context_reverso_logger
 
 
 class ContextReversoParser(SoupParserABC):
@@ -23,7 +23,7 @@ class ContextReversoParser(SoupParserABC):
             )
         )
 
-        reverso_logger.info(
+        context_reverso_logger.info(
             f"Successfully parsed an HTML page"
         )
 
@@ -99,12 +99,12 @@ class ContextReversoParser(SoupParserABC):
                     "url": str(self.url)
                 }
             }
-            reverso_logger.info(
+            context_reverso_logger.info(
                 f"Successfully parsed an HTML to dict-like format"
             )
 
         except Exception as e:
-            reverso_logger.error(
+            context_reverso_logger.error(
                 f"An error ({e}) occurred while parsing an HTML to dict-like format"
             )
 

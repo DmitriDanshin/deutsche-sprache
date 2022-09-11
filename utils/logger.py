@@ -24,4 +24,5 @@ def setup_logger(name: str, log_file: Path, level=logging.DEBUG):
 
 
 verbformen_logger = setup_logger('VERBFORMEN', Path(LOGGER_PATH) / Path("verbformen.log"))
-reverso_logger = setup_logger('REVERSO', Path(LOGGER_PATH) / Path("reverso.log"))
+context_reverso_logger = setup_logger('CONTEXT_REVERSO', Path(LOGGER_PATH) / Path("context_reverso.log"))
+synonyms_reverso_logger = setup_logger('SYNONYMS_REVERSO', Path(LOGGER_PATH) / Path("synonyms_reverso.log"))

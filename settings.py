@@ -40,11 +40,9 @@ DECLENSION_TABLE_CLASS = (
 
 CONTEXT_REVERSO_URL = "https://context.reverso.net/перевод/немецкий-русский/{}"
 
-USER_AGENT = (
-    "Mozilla/5.0 (X11; Linux x86_64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/104.0.0.0 Safari/537.36"
-)
+# Synonyms reverso
+
+SYNONYMS_REVERSO_URL = "https://synonyms.reverso.net/синонимы/de/Hund?filter=2"
 
 # Logger
 LOGGER_FORMAT = (
@@ -52,3 +50,11 @@ LOGGER_FORMAT = (
 )
 
 LOGGER_PATH = "logs/"
+
+# Other
+
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/104.0.0.0 Safari/537.36"
+)
