@@ -24,5 +24,4 @@ def setup_logger(name: str, log_file: Path, level=logging.DEBUG):
 
 
 verbformen_logger = setup_logger('VERBFORMEN', Path(LOGGER_PATH) / Path("verbformen.log"))
-wikionary_logger = setup_logger('WIKIONARY', Path(LOGGER_PATH) / Path("wikionary.log"))
 reverso_logger = setup_logger('REVERSO', Path(LOGGER_PATH) / Path("reverso.log"))

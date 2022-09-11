@@ -36,14 +36,6 @@ DECLENSION_TABLE_CLASS = (
     "vTbl"
 )
 
-# Wikionary
-
-WIKIONARY_URL = "https://{}.wiktionary.org/wiki/{}"
-EXCLUDED = [
-    "Отсутствует пример употребления см рекомендации",
-]
-# Logger
-
 # Context reverso
 
 CONTEXT_REVERSO_URL = "https://context.reverso.net/перевод/немецкий-русский/{}"
@@ -53,6 +45,8 @@ USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/104.0.0.0 Safari/537.36"
 )
+
+# Logger
 LOGGER_FORMAT = (
     '[%(asctime)s: %(name)s | %(levelname)s] %(message)s'
 )
