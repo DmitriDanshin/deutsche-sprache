@@ -6,15 +6,19 @@ from parser.verbformen import VerbformenParser
 class App(AppABC):
     def __init__(
             self,
-            verbformen_query: dict[str, str],
-            context_reverso_query: dict[str, str]
+            query: str
     ):
+        query = {
+            "w": query
+        }
+
         self.__verbformen_data = (
-            VerbformenParser(query=verbformen_query)
+            VerbformenParser(query=query)
             .parse()
         )
+
         self.__context_reverso_data = (
-            ContextReversoParser(query=context_reverso_query)
+            ContextReversoParser(query=query)
             .parse()
         )
 

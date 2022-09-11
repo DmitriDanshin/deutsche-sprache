@@ -10,15 +10,17 @@ from parser.soup import HTMLParser
 from settings import (
     VERBFORMEN_WORD_CLASSES, VERBFORMEN_TRANSLATIONS_CLASSES,
     VERBFORMEN_WORD_VERB_CLASSES, VERBFORMEN_NAV_CLASS, AMOUNT_OF_GRAMMATICAL_CASES, NOUNS_WRAPPER_CLASS,
-    NOUNS_TABLE_CLASS, STRONG_DECLENSION_INDEX, WEAK_DECLENSION_INDEX, MIXED_DECLENSION_INDEX, DECLENSION_TABLE_CLASS,
+    NOUNS_TABLE_CLASS, STRONG_DECLENSION_INDEX, WEAK_DECLENSION_INDEX,
+    MIXED_DECLENSION_INDEX, DECLENSION_TABLE_CLASS,
     VERBS_TABLE_CLASS, VERBS_CELL_CLASS
 )
+from utils.errors import Error
 from utils.logger import verbformen_logger
 
 
 class VerbformenParser(SoupParserABC):
     def __init__(self, query: dict[str, str]):
-        self.__text, self.url = VerbformenAPI.get(query=query)
+        self.__text, self.url, self.status_code = VerbformenAPI.get(query=query)
         self.__soup = (
             HTMLParser
             .parse_html(
@@ -316,8 +318,12 @@ class VerbformenParser(SoupParserABC):
         :return: dict-like object
         """
 
+        word = {
+            "error": {}
+        }
+
         try:
-            word = {
+            word |= {
                 self.__get_word(): {
                     "Часть речи": self.__get_part_of_speech().value,
                     "Переводы на русский": self.__get_word_translations_rus(),
@@ -329,16 +335,18 @@ class VerbformenParser(SoupParserABC):
             verbformen_logger.info(
                 f"Successfully parsed an HTML to dict-like format"
             )
-        except AttributeError as e:
+        except Exception as e:
             verbformen_logger.error(
                 f"An error ({e}) occurred while parsing an HTML to dict-like format"
             )
-            return {
-                "error": {
-                    "msg": f"Failed to parse a page",
-                    "type": e,
-                    "module": os.path.basename(__file__),
-                    "url": str(self.url)
-                },
-            }
+            error = Error(
+                msg=f"Failed to parse a page",
+                exception=str(e),
+                module=os.path.basename(__name__),
+                url=str(self.url),
+                status_code=self.status_code
+            )
+
+            word["error"] = error.json()
+
         return word

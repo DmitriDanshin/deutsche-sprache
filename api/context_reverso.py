@@ -10,7 +10,7 @@ from utils.logger import reverso_logger
 
 class ContextReversoAPI(APIHandlerABC):
     @classmethod
-    def get(cls, query: dict[str, str] | None = None) -> tuple[str, URL]:
+    def get(cls, query: dict[str, str] | None = None) -> tuple[str, URL, int]:
         headers = {
             'User-Agent': USER_AGENT,
         }
@@ -18,10 +18,11 @@ class ContextReversoAPI(APIHandlerABC):
             query = {}
         url = URL(CONTEXT_REVERSO_URL.format(query['w']).replace(" ", "+"))
         response = requests.get(str(url), headers=headers)
+        status_code = response.status_code
 
         reverso_logger.info(
             f"Successfully make a GET request to {url} "
-            f"with status code {response.status_code}"
+            f"with status code {status_code}"
         )
 
-        return response.text, url
+        return response.text, url, status_code

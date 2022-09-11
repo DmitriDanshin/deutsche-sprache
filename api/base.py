@@ -5,9 +5,9 @@ from starlette.datastructures import URL
 
 class APIHandlerABC(ABC):
     @abstractmethod
-    def get(self, query: dict[str, str]) -> tuple[str, URL]:
+    def get(self, query: dict[str, str]) -> tuple[str, URL, int]:
         """
         Make an HTTP request
-        :returns: clear HTML
+        :returns: an HTML, requested url and status code
         """
         pass
