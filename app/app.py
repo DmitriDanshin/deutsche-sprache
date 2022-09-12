@@ -1,4 +1,5 @@
 from app.base import AppABC
+from db.mongo import db
 from parser.context_reverso import ContextReversoParser
 from parser.synonyms_reverso import SynonymsReversoParser
 from parser.verbformen import VerbformenParser
@@ -27,6 +28,7 @@ class App(AppABC):
             SynonymsReversoParser(query=query)
             .parse()
         )
+        words_col = db["words"]
 
     def run(self) -> None:
         print({

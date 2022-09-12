@@ -9,7 +9,7 @@ from utils.logger import synonyms_reverso_logger
 
 class SynonymsReversoAPI(APIHandlerABC):
     @classmethod
-    def get(cls, query: dict[str, str] | None = None, url: str = "") -> tuple[str, URL, int]:
+    def get(cls, query: dict[str, str] | None = None) -> tuple[str, URL, int]:
         text, url, status_code = ReversoAPI.get(query, url=SYNONYMS_REVERSO_URL)
         synonyms_reverso_logger.info(
             f"Successfully make a GET request to {url} "

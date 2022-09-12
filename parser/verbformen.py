@@ -4,6 +4,7 @@ from collections import defaultdict
 from bs4 import Tag
 
 from api.verbformen import VerbformenAPI
+from db.mongo import verbformen_col
 from enums.verbformen import SpeechPart
 from parser.base import SoupParserABC
 from parser.soup import HTMLParser
@@ -15,23 +16,29 @@ from settings import (
     VERBS_TABLE_CLASS, VERBS_CELL_CLASS
 )
 from utils.errors import Error
-from utils.logger import verbformen_logger
+from utils.logger import verbformen_logger, mongodb_logger
 
 
 class VerbformenParser(SoupParserABC):
     def __init__(self, query: dict[str, str]):
-        self.__text, self.url, self.status_code = VerbformenAPI.get(query=query)
-        self.__soup = (
-            HTMLParser
-            .parse_html(
-                self.__text
-            )
-        )
-        verbformen_logger.info(
-            f"Successfully parsed an HTML page"
+        self.__query_word = query["w"]
+        self.__cached_word = (
+            verbformen_col
+            .find_one({"Query": self.__query_word})
         )
 
-        self.__part_of_speech = self.__get_part_of_speech()
+        if not self.__cached_word:
+            self.__text, self.url, self.status_code = VerbformenAPI.get(query=query)
+            self.__soup = (
+                HTMLParser
+                .parse_html(
+                    self.__text
+                )
+            )
+            self.__part_of_speech = self.__get_part_of_speech()
+            verbformen_logger.info(
+                f"Successfully tokenized an HTML page"
+            )
 
     @property
     def html(self) -> str:
@@ -323,18 +330,33 @@ class VerbformenParser(SoupParserABC):
         }
 
         try:
-            word |= {
-                self.__get_word(): {
-                    "Часть речи": self.__get_part_of_speech().value,
-                    "Переводы на русский": self.__get_word_translations_rus(),
-                    "Переводы на английский": self.__get_word_translations_eng(),
-                    "Формы": self.__get_word_forms(),
+            if self.__cached_word:
+                del self.__cached_word['_id']
+                word |= dict(self.__cached_word)
+                mongodb_logger.info(
+                    f"Successfully loaded cached version for {word['Query']}"
+                    f"from '{verbformen_col.name}' database"
+                )
+            else:
+                word |= {
+                    "Query": self.__query_word,
+                    "Word": self.__get_word(),
+                    "PartOfSpeech": self.__get_part_of_speech().value,
+                    "Russian": self.__get_word_translations_rus(),
+                    "English": self.__get_word_translations_eng(),
+                    "Forms": self.__get_word_forms(),
                     "url": str(self.url)
                 }
-            }
-            verbformen_logger.info(
-                f"Successfully parsed an HTML to dict-like format"
-            )
+                verbformen_logger.info(
+                    f"Successfully parsed an HTML to dict-like format"
+                )
+                inserted_word = verbformen_col.insert_one(word)
+                mongodb_logger.info(
+                    f"Successfully insert word {self.__query_word} "
+                    f"with id={inserted_word.inserted_id} "
+                    f"into '{verbformen_col.name}' database"
+                )
+
         except Exception as e:
             verbformen_logger.error(
                 f"An error ({e}) occurred while parsing an HTML to dict-like format"

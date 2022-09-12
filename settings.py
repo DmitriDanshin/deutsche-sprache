@@ -58,3 +58,7 @@ USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/104.0.0.0 Safari/537.36"
 )
+
+# Mongo DB
+
+CONNECTION_STRING = "mongodb://localhost:27017/"

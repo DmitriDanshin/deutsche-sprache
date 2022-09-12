@@ -23,6 +23,16 @@ def setup_logger(name: str, log_file: Path, level=logging.DEBUG):
     return logger_setup
 
 
-verbformen_logger = setup_logger('VERBFORMEN', Path(LOGGER_PATH) / Path("verbformen.log"))
-context_reverso_logger = setup_logger('CONTEXT_REVERSO', Path(LOGGER_PATH) / Path("context_reverso.log"))
-synonyms_reverso_logger = setup_logger('SYNONYMS_REVERSO', Path(LOGGER_PATH) / Path("synonyms_reverso.log"))
+verbformen_logger = setup_logger(
+    'VERBFORMEN', Path(LOGGER_PATH) / Path("verbformen.log")
+)
+context_reverso_logger = setup_logger(
+    'CONTEXT_REVERSO', Path(LOGGER_PATH) / Path("context_reverso.log")
+)
+synonyms_reverso_logger = setup_logger(
+    'SYNONYMS_REVERSO', Path(LOGGER_PATH) / Path("synonyms_reverso.log")
+)
+
+mongodb_logger = setup_logger(
+    'MONGODB', Path(LOGGER_PATH) / Path("mongodb.log")
+)

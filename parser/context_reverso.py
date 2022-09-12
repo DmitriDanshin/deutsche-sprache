@@ -1,31 +1,38 @@
 import os.path
 
 from api.context_reverso import ContextReversoAPI
+from db.mongo import context_reverso_col
 from parser.base import SoupParserABC
 from parser.soup import HTMLParser
 from utils.errors import Error
-from utils.logger import context_reverso_logger
+from utils.logger import context_reverso_logger, mongodb_logger
 
 
 class ContextReversoParser(SoupParserABC):
     def __init__(self, query: dict[str, str]):
+        self.__query_word, self.articleless_word = query["w"], query["w"]
+        self.__cached_word = (
+            context_reverso_col
+            .find_one({"Query": self.__query_word})
+        )
+        if not self.__cached_word:
+            if self.__query_word.startswith(("der", "das", "die")):
+                self.articleless_word = self.__query_word[3:].strip()
 
-        self.__word, articleless_word = query["w"], query["w"]
-        if self.__word.startswith(("der", "das", "die")):
-            articleless_word = self.__word[3:].strip()
-
-        self.__text, self.url, self.status_code = ContextReversoAPI.get(query={"w": articleless_word})
-
-        self.__soup = (
-            HTMLParser
-            .parse_html(
-                self.__text
+            self.__text, self.url, self.status_code = (
+                ContextReversoAPI.get(query={"w": self.articleless_word})
             )
-        )
 
-        context_reverso_logger.info(
-            f"Successfully parsed an HTML page"
-        )
+            self.__soup = (
+                HTMLParser
+                .parse_html(
+                    self.__text
+                )
+            )
+
+            context_reverso_logger.info(
+                f"Successfully tokenized an HTML page"
+            )
 
     @property
     def html(self) -> str:
@@ -92,16 +99,29 @@ class ContextReversoParser(SoupParserABC):
         }
 
         try:
-            word |= {
-                self.__word: {
-                    "Переводы": self.__get_word_translations_rus(),
-                    "Примеры": self.__get_word_examples(),
+            if self.__cached_word:
+                del self.__cached_word['_id']
+                word |= dict(self.__cached_word)
+                mongodb_logger.info(
+                    f"Successfully loaded cached version for {word['Query']} "
+                    f"from '{context_reverso_col.name}' database"
+                )
+            else:
+                word |= {
+                    "Query": self.__query_word,
+                    "Translations": self.__get_word_translations_rus(),
+                    "Examples": self.__get_word_examples(),
                     "url": str(self.url)
                 }
-            }
-            context_reverso_logger.info(
-                f"Successfully parsed an HTML to dict-like format"
-            )
+                context_reverso_logger.info(
+                    f"Successfully parsed an HTML to dict-like format"
+                )
+                inserted_word = context_reverso_col.insert_one(word)
+                mongodb_logger.info(
+                    f"Successfully insert word {self.__query_word} "
+                    f"with id={inserted_word.inserted_id} "
+                    f"into '{context_reverso_col.name}' database"
+                )
 
         except Exception as e:
             context_reverso_logger.error(
