@@ -72,7 +72,8 @@ class SynonymsReversoParser(SoupParserABC):
             else:
                 word |= {
                     "Query": self.__query_word,
-                    "Synonyms": self.__get_word_synonyms()
+                    "Synonyms": self.__get_word_synonyms(),
+                    "url": str(self.url)
                 }
                 synonyms_reverso_logger.info(
                     f"Successfully parsed an HTML to dict-like format"

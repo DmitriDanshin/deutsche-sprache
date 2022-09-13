@@ -334,7 +334,7 @@ class VerbformenParser(SoupParserABC):
                 del self.__cached_word['_id']
                 word |= dict(self.__cached_word)
                 mongodb_logger.info(
-                    f"Successfully loaded cached version for {word['Query']}"
+                    f"Successfully loaded cached version for {word['Query']} "
                     f"from '{verbformen_col.name}' database"
                 )
             else:

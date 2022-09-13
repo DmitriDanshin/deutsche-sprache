@@ -25,7 +25,7 @@ VERBS_TABLE_CLASS = (
     "rAufZu"
 )
 VERBS_CELL_CLASS = (
-    "rAufZu"
+    "vTbl"
 )
 
 STRONG_DECLENSION_INDEX = 1
@@ -42,7 +42,7 @@ CONTEXT_REVERSO_URL = "https://context.reverso.net/перевод/немецки
 
 # Synonyms reverso
 
-SYNONYMS_REVERSO_URL = "https://synonyms.reverso.net/синонимы/de/Hund?filter=2"
+SYNONYMS_REVERSO_URL = "https://synonyms.reverso.net/синонимы/de/{}?filter=2"
 
 # Logger
 LOGGER_FORMAT = (
