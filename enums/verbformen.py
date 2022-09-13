@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class SpeechPart(Enum):
-    NOUN = "Существительное"
-    VERB = "Глагол"
-    ADJECTIVE = "Прилагательное"
+class PartOfSpeech(Enum):
+    NOUN = "Noun"
+    VERB = "Verb"
+    ADJECTIVE = "Adjective"

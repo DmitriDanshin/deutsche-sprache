@@ -2,6 +2,7 @@ from app.base import AppABC
 from parser.context_reverso import ContextReversoParser
 from parser.synonyms_reverso import SynonymsReversoParser
 from parser.verbformen import VerbformenParser
+from utils.distributor import Distributor
 
 
 class App(AppABC):
@@ -29,8 +30,11 @@ class App(AppABC):
         )
 
     def run(self) -> None:
-        print({
-            "verbformen": self.__verbformen_data,
-            "context_reverso": self.__context_reverso_data,
-            "context_synonyms": self.__context_synonyms_data,
-        })
+        print(
+            Distributor
+            .distribute(
+                self.__verbformen_data,
+                self.__context_reverso_data,
+                self.__context_synonyms_data
+            )
+        )

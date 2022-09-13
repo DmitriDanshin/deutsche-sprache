@@ -5,7 +5,7 @@ from bs4 import Tag
 
 from api.verbformen import VerbformenAPI
 from db.mongo import verbformen_col
-from enums.verbformen import SpeechPart
+from enums.verbformen import PartOfSpeech
 from parser.base import SoupParserABC
 from parser.soup import HTMLParser
 from settings import (
@@ -48,7 +48,7 @@ class VerbformenParser(SoupParserABC):
         """
         return self.__soup.prettify()
 
-    def __get_part_of_speech(self) -> SpeechPart:
+    def __get_part_of_speech(self) -> PartOfSpeech:
         nav_items = {
             nav_item.strip() for nav_item in
             self
@@ -59,13 +59,13 @@ class VerbformenParser(SoupParserABC):
         }
 
         if "Спряжение" in nav_items:
-            return SpeechPart.VERB
+            return PartOfSpeech.VERB
         elif "Cуществительные" in nav_items:
-            return SpeechPart.NOUN
+            return PartOfSpeech.NOUN
         elif "Прилагательные" in nav_items:
-            return SpeechPart.ADJECTIVE
+            return PartOfSpeech.ADJECTIVE
 
-        return SpeechPart.NOUN
+        return PartOfSpeech.NOUN
 
     def __get_word(self) -> str:
         """
@@ -77,9 +77,9 @@ class VerbformenParser(SoupParserABC):
         """
 
         match self.__part_of_speech:
-            case SpeechPart.VERB:
+            case PartOfSpeech.VERB:
                 css_class = VERBFORMEN_WORD_VERB_CLASSES
-            case SpeechPart.NOUN | SpeechPart.ADJECTIVE:
+            case PartOfSpeech.NOUN | PartOfSpeech.ADJECTIVE:
                 css_class = VERBFORMEN_WORD_CLASSES
             case _:
                 css_class = VERBFORMEN_WORD_CLASSES
@@ -308,11 +308,11 @@ class VerbformenParser(SoupParserABC):
     def __get_word_forms(self):
         forms: dict
         match self.__part_of_speech:
-            case SpeechPart.VERB:
+            case PartOfSpeech.VERB:
                 forms = self.__get_verb_forms()
-            case SpeechPart.NOUN:
+            case PartOfSpeech.NOUN:
                 forms = self.__get_noun_forms()
-            case SpeechPart.ADJECTIVE:
+            case PartOfSpeech.ADJECTIVE:
                 forms = self.__get_adjective_forms()
             case _:
                 forms = {}
