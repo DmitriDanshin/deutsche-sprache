@@ -1,0 +1,23 @@
+<div class="forms">
+    {% for form_title in forms.keys() %}
+        <table class="form_table">
+            <thead>
+            <tr class="form_row">
+                <th>{{ form_title }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for case, word in forms.get(form_title).items() %}
+                <tr class="form_row">
+                    <td>
+                        {{ case }}
+                    </td>
+                    <td>
+                        {{ word }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>

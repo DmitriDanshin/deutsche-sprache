@@ -1,0 +1,40 @@
+<style>
+    .forms_wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin: 0;
+    }
+
+    .forms_item {
+        border: solid 1px rgba(18, 67, 189, 0.53);
+        width: 24%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 5px;
+    }
+
+    .forms_gender_title {
+        text-align: center;
+    }
+
+
+</style>
+
+<div>
+    {% for form_title in forms.keys() %}
+        <h2 class="title"> {{ form_title }}</h2>
+        <div class="forms_wrapper">
+            {% for gender in forms.get(form_title) %}
+                <div class="forms_item">
+                    <h3 class="forms_gender_title">{{ gender }}</h3><br>
+                    <div>
+                        {% for case, word in forms.get(form_title).get(gender).items() %}
+                            <span class="forms_item_content">{{ case }} - {{ word }}<br></span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
