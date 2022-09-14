@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Install The Wkhtmltopdf Extension:
+- Install The Wkhtmltopdf Extension:
 
 **Debian/Ubuntu:**
 
