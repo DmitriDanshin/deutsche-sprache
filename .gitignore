@@ -2,6 +2,9 @@
 # Byte-compiled / optimized / DLL files
 logs/*
 
+pdf/fonts/*
+pdf/output/*
+
 __pycache__/
 *.py[cod]
 *$py.class

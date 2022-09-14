@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example Pdf</title>
+    <style>
+        .title {
+            text-align: center;
+        }
+
+        .examples_table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .form_table {
+            font-family: arial, sans-serif;
+            border: solid 1px rgba(18, 67, 189, 0.53);
+            padding: 5px;
+            background-color: #ffffff;
+
+            margin: 1%;
+        }
+
+        .examples_data {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .examples_row:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        .russian_translations {
+            color: #d9072e;
+        }
+
+        .english_translations {
+            color: #0e2d7a;
+        }
+
+        .synonyms {
+            color: #1b740a;
+        }
+
+        .forms {
+            display: flex;
+            gap: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<h1 class="title">{{ title }}, {{ part_of_speech }}</h1>
+<hr>
+<h2 class="title">Translations</h2>
+<h4>Russian:</h4>
+<p class="russian_translations">
+    {{ russian_translations }}.
+</p>
+<h4>English:</h4>
+<p class="english_translations">
+    {{ english_translations }}.
+</p>
+<hr>
+<h4>Synonyms:</h4>
+<p class="synonyms">
+    {{ synonyms }}.
+</p>
+<hr>
+<h4>Forms:</h4>
+<div class="forms">
+    {% for form_title in forms.keys() %}
+        <table class="form_table">
+            <thead>
+            <tr class="form_row">
+                <th>{{ form_title }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if part_of_speech == "noun" %}
+                {% for case, word in forms.get(form_title).items() %}
+                    <tr class="form_row">
+                        <td>
+                            {{ case }}
+                        </td>
+                        <td>
+                            {{ word }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                {% for form in forms.get(form_title) %}
+                    <tr class="form_row">
+                        <td>
+                            {{ form }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+<hr>
+
+<h4>Examples:</h4>
+<table class="examples_table">
+    <thead>
+    <tr class="examples_row">
+        <th class="examples_data">German</th>
+        <th class="examples_data">Russian</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for german, russian in examples.items() %}
+        <tr class="examples_row">
+            <td class="examples_data">{{ german }}</td>
+            <td class="examples_data">{{ russian }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<hr>
+
+</body>
+</html>
